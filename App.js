@@ -1,24 +1,24 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity,Button } from 'react-native';
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {elements: [ { id: "", text: "" } ]};
+        this.state = {elements: [ { id: "", text: "", clear:false } ]};
         this.clearText = this.clearText.bind(this);
     }
 
     clearText() {
-        this._textInput.setNativeProps({value: ''});
+        this._textInput.setNativeProps({text: ''});
     }
 
     render() {
         return (
-            <View style={{padding: 10}}>
+            <View style={{padding: 30, backgroundColor: "yellow"}}>
 
                 <TextInput
                     ref={component => this._textInput = component}
-                    style={{height: 40}}
+                    style={{height: 50, fontSize: 22}}
                     clearTextOnFocus={true}
                     placeholder="Type here your tasks!"
                     returnKeyLabel='done'
@@ -30,7 +30,12 @@ export default class App extends React.Component {
 
                     }}
                 />
-                {this.state.elements.map((elem) => <Text key={elem.id}>{elem.text}</Text>)}
+                {this.state.elements.map((elem) =>
+                    <Button title={elem.id} onPress={() => {this.state.elements.clear = true} } key={elem.id}>
+
+                         {elem.text}
+                    </Button>
+                        )}
             </View>
         );
     }

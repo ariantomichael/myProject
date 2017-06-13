@@ -1,10 +1,12 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity,Button } from 'react-native';
+import {StyleSheet, Text, View, TextInput, TouchableOpacity, Button} from 'react-native';
+import CheckBox from 'react-native-checkbox';
 
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {elements: [ { id: "", text: "", clear:false } ]};
+        this.state = {elements: []};
+        this.itemCount = 0;
         this.clearText = this.clearText.bind(this);
     }
 
@@ -24,28 +26,30 @@ export default class App extends React.Component {
                     returnKeyLabel='done'
                     defaultValue=''
                     onSubmitEditing={(event) => {
-                        this.state.elements.push({ id: event.nativeEvent.text, text: event.nativeEvent.text });
+                        if(event.nativeEvent.text=="") return;
+                        this.state.elements.push({id: (this.itemCount++).toString(), text: event.nativeEvent.text});
                         this.setState({elements: this.state.elements});
                         this.clearText();
-
                     }}
                 />
                 {this.state.elements.map((elem) =>
-                    <Button title={elem.id} onPress={() => {this.state.elements.clear = true} } key={elem.id}>
-
-                         {elem.text}
+                    <Button title={elem.text} onPress={() => {
+                        this.state.elements.splice(this.state.elements.findIndex(el => el.id == elem.id), 1);
+                        this.setState({elements: this.state.elements});
+                    }
+                    } key={elem.id}>
                     </Button>
-                        )}
+                )}
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff000',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
 });

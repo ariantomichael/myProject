@@ -2,11 +2,11 @@ import React from 'react';
 import {StyleSheet, Text, View, TextInput, TouchableOpacity, Button} from 'react-native';
 import CheckBox from 'react-native-checkbox';
 
+
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {elements: [],isChecked:[]};
-        this.itemCount = 0;
+        this.state = {elements: []};
         this.clearText = this.clearText.bind(this);
     }
     clearText() {
@@ -26,37 +26,31 @@ export default class App extends React.Component {
                     defaultValue=''
                     onSubmitEditing={(event) => {
                         if (event.nativeEvent.text == "") return;
-                        this.state.elements.push({id: (this.itemCount++).toString(), text: event.nativeEvent.text});
+                        this.state.elements.push({
+                            text: event.nativeEvent.text,
+                            checked: false,
+                        });
                         this.setState({elements: this.state.elements});
                         this.clearText();
                     }}
                 />
                 {this.state.elements.map((elem) =>
-                    <CheckBox
-                        label={elem.text}
-                        onChange={(checked) => {
-                            if(!checked) {
-                                this.state.isChecked.push({id: elem.id, ischecked: !checked});
-                                this.setState({isChecked: this.state.isChecked});
-                            }else{
-                                this.state.isChecked.splice(this.state.isChecked.findIndex(i => i.id==elem.id),1);
-                                this.setState({isChecked: this.state.isChecked});
-                            }
-                        }}/>
+                        <CheckBox
+                            checked={elem.checked}
+                            label={elem.text}
+                            onChange={(checked) => {
+                                elem.checked = !checked;
+                                this.setState({elements: this.state.elements});
+                            }}/>
 
                 )}
-                <Button title="delete checked task(s)" onPress={() => {
-                    this.state.isChecked.forEach( element => {
-                        this.state.elements.splice(this.state.elements.findIndex(el => el.id == element.id ),1);
-                    });
-                    this.setState({elements: this.state.elements, isChecked:[]});
-
+                <Button title="Delete checked task(s)" onPress={() => {
+                    this.setState({elements: this.state.elements.filter(elem => !elem.checked)});
                 }
                 } key='delete'>
                 </Button>
 
                 <Button title="console log" onPress={() => {
-                    console.log(this.state.isChecked);
                     console.log(this.state.elements);
                 }
                 } key='log'>
